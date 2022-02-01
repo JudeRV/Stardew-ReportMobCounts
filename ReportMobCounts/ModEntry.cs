@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using StardewValley;
 using StardewValley.Locations;
@@ -20,6 +21,12 @@ namespace ReportMobCounts
 
         private void OnPlayerWarped(object sender, WarpedEventArgs e)
         {
+            bool? isQuarryArea = null;
+            try
+            {
+                isQuarryArea = Helper.Reflection.GetProperty<bool>(e.NewLocation as MineShaft, "isQuarryArea").GetValue();
+            }   
+            catch (ArgumentNullException) { }
             Dictionary<string, int> monsterTypes = new();
             foreach (Monster monster in e.NewLocation.characters.OfType<Monster>())
             {
@@ -37,7 +44,11 @@ namespace ReportMobCounts
                     monsterTypes.Remove("Sludge");
                     if (e.NewLocation is MineShaft ms)
                     {
-                        if (ms.mineLevel < 120)
+                        if (isQuarryArea ?? false)
+                        {
+                            monsterTypes.Add("Slime", value);
+                        }
+                        else if (ms.mineLevel < 120)
                         {
                             monsterTypes.Add("Red Slime", value);
                         }
@@ -50,6 +61,12 @@ namespace ReportMobCounts
                     monsterTypes.Remove("Green Slime");
                     monsterTypes.Add("Slime", value);
                 }
+                if (kvp.Key == "Prismatic Slime")
+                {
+                    PrintInGame($"{kvp.Value} Prismatic Slime detected!", Color.Purple);
+                    monsterTypes.Remove("Prismatic Slime");
+                    Game1.playSound("newRecord");
+                }
             }
             foreach (KeyValuePair<string, int> kvp in monsterTypes)
             {
@@ -58,9 +75,9 @@ namespace ReportMobCounts
             if (monsterTypes.Count > 0) PrintInGame("-----");
         }
 
-        private void PrintInGame(string msg)
+        private void PrintInGame(string msg, Color? color = null)
         {
-            if (Config.PrintReportsToInGameChat) Game1.chatBox.addMessage(msg, Color.White);
+            if (Config.PrintReportsToInGameChat) Game1.chatBox.addMessage(msg, color ?? Color.White);
             else Monitor.Log(msg, LogLevel.Debug);
         }
     }
