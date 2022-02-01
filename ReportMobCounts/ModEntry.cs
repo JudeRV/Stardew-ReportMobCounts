@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using StardewValley;
+using StardewValley.Locations;
 using StardewValley.Monsters;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -34,7 +35,14 @@ namespace ReportMobCounts
                 {
                     int value = kvp.Value;
                     monsterTypes.Remove("Sludge");
-                    monsterTypes.Add("Purple Slime", value);
+                    if (e.NewLocation is MineShaft ms)
+                    {
+                        if (ms.mineLevel < 120)
+                        {
+                            monsterTypes.Add("Red Slime", value);
+                        }
+                        else monsterTypes.Add("Purple Slime", value);
+                    }
                 }
                 if (kvp.Key == "Green Slime")
                 {
