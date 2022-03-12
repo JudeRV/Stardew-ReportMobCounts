@@ -72,18 +72,25 @@ namespace ReportMobCounts
             {
                 PrintInGame($"{kvp.Value} {kvp.Key}{(kvp.Value > 1 ? "s" : "")} detected!");
             }
-            if (monsterTypes.Count > 0) PrintInGame("-----");
+            if (monsterTypes.Count > 0 && !Config.PrintReportsToInGameHud) PrintInGame("-----");
         }
 
         private void PrintInGame(string msg, Color? color = null)
         {
             if (Config.PrintReportsToInGameChat) Game1.chatBox.addMessage(msg, color ?? Color.White);
+            if(Config.PrintReportsToInGameHud)
+            {
+                HUDMessage message = new HUDMessage(message: msg, color: color ?? Color.Black, timeLeft: Config.InGameHudTimeOnScreen, fadeIn: true);
+                Game1.addHUDMessage(message);
+            }
             else Monitor.Log(msg, LogLevel.Debug);
         }
     }
 
     class ModConfig
     {
-        public bool PrintReportsToInGameChat { get; set; } = true;
+        public bool PrintReportsToInGameChat { get; set; } = false;
+        public bool PrintReportsToInGameHud { get; set; } = true;
+        public float InGameHudTimeOnScreen { get; set; } = 1100f;
     }
 }
