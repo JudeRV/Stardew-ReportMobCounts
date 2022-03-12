@@ -80,7 +80,7 @@ namespace ReportMobCounts
             if (Config.PrintReportsToInGameChat) Game1.chatBox.addMessage(msg, color ?? Color.White);
             if(Config.PrintReportsToInGameHud)
             {
-                HUDMessage message = new HUDMessage(message: msg, color: color ?? Color.Black, timeLeft: 1100f, fadeIn: true);
+                HUDMessage message = new HUDMessage(message: msg, color: color ?? Color.Black, timeLeft: Config.InGameHudTimeOnScreen, fadeIn: true);
                 Game1.addHUDMessage(message);
             }
             else Monitor.Log(msg, LogLevel.Debug);
@@ -91,5 +91,6 @@ namespace ReportMobCounts
     {
         public bool PrintReportsToInGameChat { get; set; } = false;
         public bool PrintReportsToInGameHud { get; set; } = true;
+        public float InGameHudTimeOnScreen { get; set; } = 1100f;
     }
 }
