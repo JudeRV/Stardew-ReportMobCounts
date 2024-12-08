@@ -1,0 +1,9 @@
+{
+  "Name": "ReportMobCounts",
+  "Author": "StultusV",
+  "Version": "1.2.1",
+  "Description": "Reports the number of mobs in a room when you walk into it",
+  "UniqueID": "StultusV.ReportMobCounts",
+  "EntryDll": "MobCountReports.dll",
+  "UpdateKeys": [ "Nexus:10899" ]
+}
